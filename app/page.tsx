@@ -199,7 +199,7 @@ export default function Home() {
             accept=".json"
             onChange={handleFileChange}
             style={{
-              marginBottom: "30px",  // Increased vertical spacing
+              
               padding: "15px",
               borderRadius: "8px",
               border: "2px solid #4C51BF",
