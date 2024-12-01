@@ -43,6 +43,7 @@ export default function Home() {
     // deleted localhost8000
     console.log("going to fetch index.py")
     try {
+      console.log(jsonData)
       const response = await fetch("/api/py/your-endpoint", {
         method: "POST",
         headers: {

@@ -19,6 +19,8 @@ Returns:
 """
 def chat_with_gpt(context, prompt):
     # print("chatting with gpt")
+    print(context)
+    print(prompt)
     try:
         response = openai.ChatCompletion.create(
             model="gpt-4o-mini",
