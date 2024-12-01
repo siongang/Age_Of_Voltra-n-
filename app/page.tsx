@@ -41,6 +41,7 @@ export default function Home() {
     setLoading(true);
     setError(null);
     // deleted localhost8000
+    console.log("going to fetch index.py")
     try {
       const response = await fetch("/api/py/your-endpoint", {
         method: "POST",
@@ -49,7 +50,7 @@ export default function Home() {
         },
         body: jsonData, // Send raw JSON data as a string
       });
-
+      console.log(response)
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
