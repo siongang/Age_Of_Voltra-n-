@@ -24,7 +24,7 @@ app.add_middleware(
 @app.post("/api/py/your-endpoint")
 async def process_json(request: Request):
 
-    print("HIII")
+    print("INDEX PY")
     
     try:
         # Read the raw body as a string

@@ -30,18 +30,14 @@ def process(json_file):
 
     # Iterate through each line in the export.json file
     for data in json_file:
-        print(counter)
+        print(data)
         # Turn the line to a dictionary
         # data = json.loads(line) 
         # find_company_name = read_file_to_string("find_company_name.txt")
         # find_domain = read_file_to_string("find_domain.txt")
         find_company_name = "You are an assistant tasked with identifying the company or organization associated with a specific address based on search results. The address might represent a commercial, retail, or public venue. Use contextual and public knowledge to determine the most relevant company or organization. Search results will often mention the name of the company tied to the address. Respond with only the company's name or 'Unknown' if no clear association exists."
+        find_domain = "Look through the search results to see if the official company domain is listed. Official domain: The domain will often have the company name in the URL (e.g., www.companyname.com). Avoid real estate websites (e.g., Apartments.com, Zillow) as they are not the official company websites. Companies of interest include property management companies, condo management companies, loft management companies, Facility management companies, Building management companies. Return the Domain: If the official domain is found in the search results, return WITH ONLY the domain and NOTHING ELSE. If no domain is found, return 'Unknown Domain'."
         
-        
-
-        find_domain = ("Look through the search results to see if the official company domain is listed. Official domain: The domain will often have the company name in the URL (e.g., www.companyname.com). Avoid real estate websites (e.g., Apartments.com, Zillow) as they are not the official company websites. Companies of interest include property management companies, condo management companies, loft management companies, Facility management companies, Building management companies. Return the Domain: If the official domain is found in the search results, return WITH ONLY the domain and NOTHING ELSE. If no domain is found, return 'Unknown Domain'.")
-        
-
 
         # Make sure the address and location is different. THIS ASSUMES THAT THE LIST IS ALREADY SORTED!!!
         if data["address"] != previous_data["address"]:   
@@ -72,10 +68,9 @@ def process(json_file):
             # Saving the current dictionary that holds data to previous data. 
             previous_data = data
         
-
         # USED FOR TESTING
         counter += 1
-        print(f"{counter} domain")
+        print(f"{counter} {owner}")
         # if counter > 5: break
 
     return dataset
