@@ -1,122 +1,266 @@
-import Image from "next/image";
-import Link from "next/link";
+"use client";
+import { useState } from "react";
 
 export default function Home() {
+  const [file, setFile] = useState<File | null>(null);
+  const [jsonData, setJsonData] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<number>(1); // Track active tab state
+
+  // Handle file input
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files ? e.target.files[0] : null;
+    if (selectedFile && selectedFile.type === "application/json") {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const fileContent = reader.result as string;
+          setJsonData(fileContent); // Store raw file content
+          setError(null);
+        } catch (err) {
+          setError("Failed to read the JSON file.");
+          setJsonData(null);
+        }
+      };
+      reader.readAsText(selectedFile);
+      setFile(selectedFile);
+    } else {
+      setError("Please select a valid JSON file.");
+    }
+  };
+
+  // Handle Generate button click
+  const handleGenerate = async () => {
+    if (!jsonData) {
+      setError("No JSON data to send.");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("http://localhost:8000/api/py/your-endpoint", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonData, // Send raw JSON data as a string
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      // Get the CSV file as a blob from the response
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      // Create a download link and trigger it
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "data.csv";  // Set the filename
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+    } catch (err) {
+      setError("Failed to send data to the backend.");
+      console.error("Error:", err); // Log any errors
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing FastApi API&nbsp;
-          <Link href="/api/py/helloFastApi">
-            <code className="font-mono font-bold">api/index.py</code>
-          </Link>
-        </p>
-        <p className="fixed right-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing Next.js API&nbsp;
-          <Link href="/api/helloNextJs">
-            <code className="font-mono font-bold">app/api/helloNextJs</code>
-          </Link>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+        backgroundColor: "#ffffff",
+        fontFamily: "Helvetica, Arial, sans-serif",
+        padding: "20px",
+        color: "#333",
+      }}
+    >
+      {/* Main Title */}
+      <h1
+        style={{
+          fontSize: "3rem",
+          fontWeight: "700",
+          color: "#222",
+          textAlign: "center",
+          marginBottom: "40px",  // Increased vertical spacing
+          lineHeight: "1.3",
+          transition: "transform 0.5s ease-in-out",
+        }}
+      >
+        Age of Voltra(n) Energy
+      </h1>
+
+      {/* Parent Website Link */}
+      <a
+        href="https://www.voltra.energy/"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          color: "#4C51BF",
+          fontSize: "1.2rem",
+          textDecoration: "none",
+          marginBottom: "30px",  // Increased vertical spacing
+          transition: "color 0.3s",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.color = "#0a3c77")}
+        onMouseLeave={(e) => (e.currentTarget.style.color = "#4C51BF")}
+      >
+        Visit Voltra Energy Website
+      </a>
+
+      {/* Tabs for Solutions */}
+      <div
+        style={{
+          display: "flex",
+          borderBottom: "2px solid #4C51BF",
+          marginBottom: "40px",  // Increased vertical spacing
+          width: "100%",
+          maxWidth: "800px",
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+          borderRadius: "10px",
+        }}
+      >
+        <div
+          onClick={() => setActiveTab(1)}
+          style={{
+            flex: 1,
+            textAlign: "center",
+            padding: "15px",
+            cursor: "pointer",
+            backgroundColor: activeTab === 1 ? "#4C51BF" : "#f5f5f5",
+            color: activeTab === 1 ? "white" : "#333",
+            fontWeight: activeTab === 1 ? "bold" : "normal",
+            transition: "background-color 0.3s, transform 0.3s",
+            transform: activeTab === 1 ? "scale(1.05)" : "scale(1)",
+            borderTopLeftRadius: "10px",
+            borderTopRightRadius: "10px",
+          }}
+        >
+          Solution 1: JSON Domain Extraction
+        </div>
+        <div
+          onClick={() => setActiveTab(2)}
+          style={{
+            flex: 1,
+            textAlign: "center",
+            padding: "15px",
+            cursor: "pointer",
+            backgroundColor: activeTab === 2 ? "#4C51BF" : "#f5f5f5",
+            color: activeTab === 2 ? "white" : "#333",
+            fontWeight: activeTab === 2 ? "bold" : "normal",
+            transition: "background-color 0.3s, transform 0.3s",
+            transform: activeTab === 2 ? "scale(1.05)" : "scale(1)",
+            borderTopLeftRadius: "10px",
+            borderTopRightRadius: "10px",
+          }}
+        >
+          Solution 2: TBD
         </div>
       </div>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
+      {/* Solution 1: JSON Domain Extraction */}
+      {activeTab === 1 && (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%",
+            maxWidth: "800px",
+            textAlign: "center",
+          }}
         >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+          <section style={{ marginBottom: "50px" }}>  {/* Increased vertical spacing */}
+            <h3 style={{ fontSize: "1.5rem", fontWeight: "600" }}>
+              JSON Domain Extraction
+            </h3>
+            <p>
+              Upload a JSON file containing information about charging stations.
+              We'll help you extract the web domains of the companies that own
+              these stations.
+            </p>
+          </section>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+          {/* File Input */}
+          <input
+            type="file"
+            accept=".json"
+            onChange={handleFileChange}
+            style={{
+              marginBottom: "30px",  // Increased vertical spacing
+              padding: "15px",
+              borderRadius: "8px",
+              border: "2px solid #4C51BF",
+              fontSize: "16px",
+              width: "250px",
+              textAlign: "center",
+              marginBottom: "40px",
+              transition: "0.3s",
+            }}
+          />
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
+          {/* Error message */}
+          {error && (
+            <p style={{ color: "red", fontSize: "14px", fontWeight: "bold" }}>
+              {error}
+            </p>
+          )}
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
+          {/* Generate Button */}
+          <button
+            onClick={handleGenerate}
+            disabled={loading}
+            style={{
+              padding: "15px 40px",
+              backgroundColor: "#4C51BF",
+              color: "white",
+              border: "none",
+              borderRadius: "10px",
+              cursor: "pointer",
+              fontSize: "18px",
+              fontWeight: "600",
+              transition: "background-color 0.3s, transform 0.3s",
+              opacity: loading ? 0.6 : 1,
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            {loading ? "Generating..." : "Generate"}
+          </button>
+        </div>
+      )}
+
+      {/* Solution 2 (Placeholder for now) */}
+      {activeTab === 2 && (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%",
+            maxWidth: "800px",
+            textAlign: "center",
+          }}
         >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+          <section style={{ marginBottom: "50px" }}>  {/* Increased vertical spacing */}
+            <h3 style={{ fontSize: "1.5rem", fontWeight: "600" }}>
+              Solution 2: TBD
+            </h3>
+            <p>Stay tuned for the second solution coming soon.</p>
+          </section>
+        </div>
+      )}
+    </div>
   );
 }
