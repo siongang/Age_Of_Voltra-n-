@@ -60,10 +60,11 @@ def process(json_file):
 
             if (owner.lower() != "unknown"):
                 query = f"{owner} {data.get('city', data.get('postalcode', '')) if data.get('city', '') != 'NA' else data.get('postalcode', '')} Official Website"
+                print(query)
                 google_search_results = google_search(query, 6)
 
                 print(f"GOOGLE SEARCH RESULT: {google_search_results}")
-                
+
                 domain = chat_with_gpt(find_domain, google_search_results)
                 
                 line = {"Company Name":owner, "Address": address, "Domain": domain}
