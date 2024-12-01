@@ -43,14 +43,11 @@ async def process_json(request: Request):
         # Process the data using the process function
         user_result = process(objects)  
 
-
         csv_buffer = io.StringIO()
         csv_writer = csv.DictWriter(csv_buffer, fieldnames=user_result[0].keys())
         csv_writer.writeheader()
         csv_writer.writerows(user_result)
         csv_buffer.seek(0)
-
-
 
         # Return the CSV as a streaming response to the frontend
         return StreamingResponse(csv_buffer, media_type="text/csv", headers={"Content-Disposition": "attachment; filename=data.csv"})
