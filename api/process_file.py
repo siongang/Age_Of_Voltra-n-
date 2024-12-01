@@ -68,7 +68,7 @@ def process(json_file):
         # USED FOR TESTING
         counter += 1
         print(f"{counter} domain")
-        if counter > 5: break
+        # if counter > 5: break
 
     return dataset
 
