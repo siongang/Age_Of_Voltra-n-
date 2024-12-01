@@ -12,6 +12,10 @@ SEARCH_ENGINE_ID = os.getenv("SEARCH_ENGINE_ID")
 def google_search(query, num_results):
 
     print("IN GOOGLE SEARCH")
+
+    query.replace(" ", "_").replace(",", "-")
+
+
     url = f"https://www.googleapis.com/customsearch/v1?q={query}&key={GOOGLE_KEY}&cx={SEARCH_ENGINE_ID}"
     print(url)
     # Make the request
