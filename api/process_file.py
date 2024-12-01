@@ -27,7 +27,6 @@ def process(json_file):
     # loop counter for TESTING 
     counter = 0
 
-
     # Iterate through each line in the export.json file
     for data in json_file:
         print(data)
@@ -38,6 +37,8 @@ def process(json_file):
         find_company_name = "You are an assistant tasked with identifying the company or organization associated with a specific address based on search results. The address might represent a commercial, retail, or public venue. Use contextual and public knowledge to determine the most relevant company or organization. Search results will often mention the name of the company tied to the address. Respond with only the company's name or 'Unknown' if no clear association exists."
         find_domain = "Look through the search results to see if the official company domain is listed. Official domain: The domain will often have the company name in the URL (e.g., www.companyname.com). Avoid real estate websites (e.g., Apartments.com, Zillow) as they are not the official company websites. Companies of interest include property management companies, condo management companies, loft management companies, Facility management companies, Building management companies. Return the Domain: If the official domain is found in the search results, return WITH ONLY the domain and NOTHING ELSE. If no domain is found, return 'Unknown Domain'."
         
+        print(find_company_name)
+        print(find_domain)
 
         # Make sure the address and location is different. THIS ASSUMES THAT THE LIST IS ALREADY SORTED!!!
         if data["address"] != previous_data["address"]:   
@@ -60,6 +61,7 @@ def process(json_file):
             if (owner.lower() != "unknown"):
                 query = f"{owner} {data.get('city', data.get('postalcode', '')) if data.get('city', '') != 'NA' else data.get('postalcode', '')} Official Website"
                 google_search_results = google_search(query, 6)
+                print(google_search_results)
                 domain = chat_with_gpt(find_domain, google_search_results)
                 
                 line = {"Company Name":owner, "Address": address, "Domain": domain}
