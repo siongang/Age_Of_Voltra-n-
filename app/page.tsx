@@ -2,12 +2,13 @@
 import { useState } from "react";
 
 export default function Home() {
-  console.log("HI")
+  console.log("HI");
   const [file, setFile] = useState<File | null>(null);
   const [jsonData, setJsonData] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<number>(1); // Track active tab state
+  const [activeTab, setActiveTab] = useState<number>(1);
+  const [showNote, setShowNote] = useState(false); // State for showing Important Note
 
   // Handle file input
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -17,7 +18,7 @@ export default function Home() {
       reader.onload = () => {
         try {
           const fileContent = reader.result as string;
-          setJsonData(fileContent); // Store raw file content
+          setJsonData(fileContent);
           setError(null);
         } catch (err) {
           setError("Failed to read the JSON file.");
@@ -31,7 +32,6 @@ export default function Home() {
     }
   };
 
-  // Handle Generate button click
   const handleGenerate = async () => {
     if (!jsonData) {
       setError("No JSON data to send.");
@@ -40,37 +40,33 @@ export default function Home() {
 
     setLoading(true);
     setError(null);
-    // deleted localhost8000
-    console.log("going to fetch index.py")
+
     try {
-      console.log(jsonData)
+      console.log(jsonData);
       const response = await fetch("/api/py/your-endpoint", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: jsonData, // Send raw JSON data as a string
+        body: jsonData,
       });
-      console.log(response)
+
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
 
-      // Get the CSV file as a blob from the response
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
 
-      // Create a download link and trigger it
       const a = document.createElement("a");
       a.href = url;
-      a.download = "data.csv";  // Set the filename
+      a.download = "data.csv";
       document.body.appendChild(a);
       a.click();
       a.remove();
-
     } catch (err) {
       setError("Failed to send data to the backend.");
-      console.error("Error:", err); // Log any errors
+      console.error("Error:", err);
     } finally {
       setLoading(false);
     }
@@ -97,7 +93,7 @@ export default function Home() {
           fontWeight: "700",
           color: "#222",
           textAlign: "center",
-          marginBottom: "40px",  // Increased vertical spacing
+          marginBottom: "40px",
           lineHeight: "1.3",
           transition: "transform 0.5s ease-in-out",
         }}
@@ -114,7 +110,7 @@ export default function Home() {
           color: "#4C51BF",
           fontSize: "1.2rem",
           textDecoration: "none",
-          marginBottom: "30px",  // Increased vertical spacing
+          marginBottom: "30px",
           transition: "color 0.3s",
         }}
         onMouseEnter={(e) => (e.currentTarget.style.color = "#0a3c77")}
@@ -128,7 +124,7 @@ export default function Home() {
         style={{
           display: "flex",
           borderBottom: "2px solid #4C51BF",
-          marginBottom: "40px",  // Increased vertical spacing
+          marginBottom: "40px",
           width: "100%",
           maxWidth: "800px",
           boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
@@ -185,7 +181,7 @@ export default function Home() {
             textAlign: "center",
           }}
         >
-          <section style={{ marginBottom: "50px" }}>  {/* Increased vertical spacing */}
+          <section style={{ marginBottom: "50px" }}>
             <h3 style={{ fontSize: "1.5rem", fontWeight: "600" }}>
               JSON Domain Extraction
             </h3>
@@ -196,23 +192,99 @@ export default function Home() {
             </p>
           </section>
 
-          {/* File Input */}
-          <input
-            type="file"
-            accept=".json"
-            onChange={handleFileChange}
+          {/* File Input and Important Note Button */}
+          <div
             style={{
-              
-              padding: "15px",
-              borderRadius: "8px",
-              border: "2px solid #4C51BF",
-              fontSize: "16px",
-              width: "250px",
-              textAlign: "center",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "15px", // Add spacing between input and button
               marginBottom: "40px",
-              transition: "0.3s",
             }}
-          />
+          >
+            {/* File Input */}
+            <input
+              type="file"
+              accept=".json"
+              onChange={handleFileChange}
+              style={{
+                padding: "15px",
+                borderRadius: "8px",
+                border: "2px solid #4C51BF",
+                fontSize: "16px",
+                width: "250px",
+                textAlign: "center",
+                transition: "0.3s",
+              }}
+            />
+
+            {/* Important Note Button */}
+            <div style={{ position: "relative" }}>
+              <button
+                onClick={() => setShowNote(!showNote)}
+                style={{
+                  backgroundColor: "#4C51BF",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "50%",
+                  width: "50px",
+                  height: "50px",
+                  fontSize: "16px",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  transition: "transform 0.2s",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
+                onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+              >
+                ℹ
+              </button>
+              {showNote && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "60px",
+                    left: "50%",
+                    transform: "translate(20%,-50%)",
+                    backgroundColor: "#f9f9f9",
+                    border: "1px solid #ccc",
+                    borderRadius: "10px",
+                    padding: "20px",
+                    width: "300px",
+                    zIndex: 100,
+                    textAlign: "left",
+                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+                    fontSize: "14px",
+                    lineHeight: "1.6",
+                  }}
+                >
+                  <strong>JSON File Input Example:</strong>
+                  <pre
+                    style={{
+                      backgroundColor: "#f5f5f5",
+                      padding: "10px",
+                      borderRadius: "5px",
+                      overflowX: "auto",
+                    }}
+                  >
+                    {"{city: 'Los Angeles', country: 'US', address: 'Santa Monica Boulevard, 10534'}"}
+                    {"\n{city: 'New York', country: 'US', address: 'Broadway, 12345'}"}
+                  </pre>
+                  
+                  <p>
+                    Each location must be a separate root entry on its own line 
+                    <em>(not separated by commas or enclosed in brackets)</em>. 
+                    The JSON file must include an <strong>'address'</strong> field. 
+                    Limit to <strong>100 locations</strong> to ensure processing completes within 60 seconds.
+                  </p>
+                </div>
+
+              )}
+            </div>
+          </div>
 
           {/* Error message */}
           {error && (
@@ -244,26 +316,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Solution 2 (Placeholder for now) */}
-      {activeTab === 2 && (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            width: "100%",
-            maxWidth: "800px",
-            textAlign: "center",
-          }}
-        >
-          <section style={{ marginBottom: "50px" }}>  {/* Increased vertical spacing */}
-            <h3 style={{ fontSize: "1.5rem", fontWeight: "600" }}>
-              Solution 2: TBD
-            </h3>
-            <p>Stay tuned for the second solution coming soon.</p>
-          </section>
-        </div>
-      )}
     </div>
   );
 }

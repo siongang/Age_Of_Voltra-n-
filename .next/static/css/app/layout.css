@@ -571,6 +571,18 @@ video {
 [hidden] {
   display: none;
 }
+.fixed {
+  position: fixed;
+}
+.absolute {
+  position: absolute;
+}
+.relative {
+  position: relative;
+}
+.inline-block {
+  display: inline-block;
+}
 .flex {
   display: flex;
 }
