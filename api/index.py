@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 import json
-from api.process_file import process
+from process_file import process
 import io
 import csv
 
@@ -23,6 +23,8 @@ app.add_middleware(
 
 @app.post("/api/py/your-endpoint")
 async def process_json(request: Request):
+
+    print(request)
     try:
         # Read the raw body as a string
         body = await request.body()

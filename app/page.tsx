@@ -41,7 +41,7 @@ export default function Home() {
     setError(null);
     // deleted localhost8000
     try {
-      const response = await fetch("/api/py/your-endpoint", {
+      const response = await fetch("https://age-of-voltra-n.vercel.app/api/py/your-endpoint", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
