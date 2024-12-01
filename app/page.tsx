@@ -2,6 +2,7 @@
 import { useState } from "react";
 
 export default function Home() {
+  console.log("HI")
   const [file, setFile] = useState<File | null>(null);
   const [jsonData, setJsonData] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);

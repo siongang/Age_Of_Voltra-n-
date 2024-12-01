@@ -25,6 +25,7 @@ app.add_middleware(
 async def process_json(request: Request):
 
     print("HIII")
+    
     try:
         # Read the raw body as a string
         body = await request.body()
@@ -57,3 +58,8 @@ async def process_json(request: Request):
     except Exception as e:
         print(f"Error processing JSON: {e}")
         raise HTTPException(status_code=400, detail="Invalid JSON data")
+    except json.JSONDecodeError as jde:
+        print(f"JSON decoding error: {jde}")
+    raise HTTPException(status_code=400, detail="Invalid JSON format")
+
+
