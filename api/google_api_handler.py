@@ -16,7 +16,7 @@ def google_search(query, num_results):
 
     # Make the request
     response = requests.get(url)
-
+    print(response)
     response_string = ""
 
     # response_dictionary = []
