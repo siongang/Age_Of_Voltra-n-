@@ -1,8 +1,8 @@
 import os
 import json
 
-from .gpt_api_handler import chat_with_gpt
-from .google_api_handler import google_search
+from api.gpt_api_handler import chat_with_gpt
+from api.google_api_handler import google_search
 import sys
 sys.stdout.reconfigure(encoding='utf-8')  # Set the standard output encoding to UTF-8
 import csv
