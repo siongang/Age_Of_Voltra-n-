@@ -18,9 +18,11 @@ Returns:
     String: gpt's answer
 """
 def chat_with_gpt(context, prompt):
+
+    print("chatting with gpt")
     # print("chatting with gpt")
-    print(context)
-    print(prompt)
+    print(f"CONTEXT {context}")
+    print(f"PROMPT {prompt}")
     try:
         response = openai.ChatCompletion.create(
             model="gpt-4o-mini",
