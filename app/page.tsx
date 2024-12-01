@@ -39,9 +39,9 @@ export default function Home() {
 
     setLoading(true);
     setError(null);
-
+    // deleted localhost8000
     try {
-      const response = await fetch("http://localhost:8000/api/py/your-endpoint", {
+      const response = await fetch("/api/py/your-endpoint", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
