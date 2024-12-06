@@ -102,7 +102,7 @@ export default function Home() {
       </h1>
 
       {/* Parent Website Link */}
-      <a
+      {/* <a
         href="https://www.voltra.energy/"
         target="_blank"
         rel="noopener noreferrer"
@@ -117,7 +117,7 @@ export default function Home() {
         onMouseLeave={(e) => (e.currentTarget.style.color = "#4C51BF")}
       >
         Visit Voltra Energy Website
-      </a>
+      </a> */}
 
       {/* Tabs for Solutions */}
       <div
@@ -183,12 +183,12 @@ export default function Home() {
         >
           <section style={{ marginBottom: "50px" }}>
             <h3 style={{ fontSize: "1.5rem", fontWeight: "600" }}>
-              JSON Domain Extraction
+              Website Domain Finder
             </h3>
             <p>
-              Upload a JSON file containing information about charging stations.
-              We'll help you extract the web domains of the companies that own
-              these stations.
+              Upload a JSON file containing information about a property.
+              We'll help you find the web domains of the companies that own
+              these properties.
             </p>
           </section>
 
