@@ -98,7 +98,7 @@ export default function Home() {
           transition: "transform 0.5s ease-in-out",
         }}
       >
-        Age of Voltra(n) Energy
+        Property Solutions
       </h1>
 
       {/* Parent Website Link */}
