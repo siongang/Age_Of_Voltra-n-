@@ -274,8 +274,9 @@ export default function Home() {
                       overflowX: "auto",
                     }}
                   >
-                    {"{city: 'Los Angeles', country: 'US', address: 'Santa Monica Boulevard, 10534'}"}
-                    {"\n{city: 'New York', country: 'US', address: 'Broadway, 12345'}"}
+                    
+                    {"{\"city\": \"Los Angeles\", \"country\": \"US\", \"address\": \"Santa Monica Boulevard, 10534\"}"}
+                    {"\n{\"city\": \"New York\", \"country\": \"US\:, \"address\": \"Broadway, 12345\"}"}
                   </pre>
                   
                   <p>
