@@ -149,7 +149,7 @@ export default function Home() {
         >
           Solution 1: JSON Domain Extraction
         </div>
-        <div
+        {/* <div
           onClick={() => setActiveTab(2)}
           style={{
             flex: 1,
@@ -165,8 +165,8 @@ export default function Home() {
             borderTopRightRadius: "10px",
           }}
         >
-          Solution 2: TBD
-        </div>
+          Solution 2: TBD */}
+        {/* </div> */}
       </div>
 
       {/* Solution 1: JSON Domain Extraction */}
