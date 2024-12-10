@@ -73,16 +73,19 @@ export default function Home() {
   };
 
   return (
+
+    
+
     <div
       style={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "flex-center",
         minHeight: "100vh",
         backgroundColor: "#ffffff",
         fontFamily: "Helvetica, Arial, sans-serif",
-        padding: "20px",
+        padding: "100px",
         color: "#333",
       }}
     >
@@ -98,7 +101,7 @@ export default function Home() {
           transition: "transform 0.5s ease-in-out",
         }}
       >
-        Property Solutions
+        Property Tools
       </h1>
 
       {/* Parent Website Link */}
@@ -147,9 +150,9 @@ export default function Home() {
             borderTopRightRadius: "10px",
           }}
         >
-          Solution 1: JSON Domain Extraction
+          JSON Input
         </div>
-        {/* <div
+        <div
           onClick={() => setActiveTab(2)}
           style={{
             flex: 1,
@@ -165,10 +168,11 @@ export default function Home() {
             borderTopRightRadius: "10px",
           }}
         >
-          Solution 2: TBD */}
-        {/* </div> */}
+          Solution 2: 
+        </div>
       </div>
 
+      
       {/* Solution 1: JSON Domain Extraction */}
       {activeTab === 1 && (
         <div

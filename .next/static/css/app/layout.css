@@ -580,11 +580,11 @@ video {
 .relative {
   position: relative;
 }
-.inline-block {
-  display: inline-block;
-}
 .flex {
   display: flex;
+}
+.hidden {
+  display: none;
 }
 .transform {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
