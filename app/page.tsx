@@ -187,7 +187,7 @@ export default function Home() {
         >
           <section style={{ marginBottom: "50px" }}>
             <h3 style={{ fontSize: "1.5rem", fontWeight: "600" }}>
-              Website Domain Finder
+              Property Owner & Company Domain Finder
             </h3>
             <p>
               Upload a JSON file containing information about a property.
