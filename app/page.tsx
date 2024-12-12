@@ -6,10 +6,27 @@ export default function Home() {
   const [file, setFile] = useState<File | null>(null);
   const [jsonData, setJsonData] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<number>(1);
   const [showNote, setShowNote] = useState(false); // State for showing Important Note
   const [textInput, setTextInput] = useState<string>('');
+
+
+
+
+// const [error, setError] = useState<string | null>(null);
+
+ // Single error state object for all tabs
+ const [errors, setErrors] = useState({
+  single: "",  // Error for Single Property Finder tab
+  multiple: "" // Error for Multiple Property Finder tab
+});
+
+
+
+
+
+
+
   // Handle file input
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
@@ -19,23 +36,51 @@ export default function Home() {
         try {
           const fileContent = reader.result as string;
           setJsonData(fileContent);
-          setError(null);
+          // setError(null);
+          setErrors({
+            single: "",
+            multiple: ""
+          });
         } catch (err) {
-          setError("Failed to read the JSON file.");
+
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            multiple:"Failed to read the JSON file."
+
+          }))
+
+
+          // setError("Failed to read the JSON file.");
           setJsonData(null);
         }
       };
       reader.readAsText(selectedFile);
       setFile(selectedFile);
     } else {
-      setError("Please select a valid JSON file.");
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        multiple:"Please select a valid JSON file."
+
+      }))
     }
   };
 
 
   const handleTextGenerate = async () => {
     
-    
+    if (textInput == "") {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        single:"Please type an address"
+      }))
+      return
+    }
+
+    setErrors({
+      single:"",
+      multiple:""
+    })  
+      
     setLoading(true);
     const input = `{\"address\":\"${textInput}\"}`;
     const response = await fetch("/api/py/your-endpoint", {
@@ -65,12 +110,21 @@ export default function Home() {
 
   const handleGenerate = async () => {
     if (!jsonData) {
-      setError("No JSON data to send.");
+      // setError("No JSON data to send.");
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        multiple:"No JSON data to send."
+
+      }))
       return;
     }
 
     setLoading(true);
-    setError(null);
+    // setError(null);
+    setErrors({
+      single: "",
+      multiple: ""
+    });
 
     try {
       console.log(jsonData);
@@ -96,7 +150,12 @@ export default function Home() {
       a.click();
       a.remove();
     } catch (err) {
-      setError("Failed to send data to the backend.");
+      // setError("Failed to send data to the backend.");
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        multiple:"Failed to send data to the backend."
+
+      }))
       console.error("Error:", err);
     } finally {
       setLoading(false);
@@ -151,6 +210,8 @@ export default function Home() {
         Visit Voltra Energy Website
       </a> */}
 
+
+      
       {/* Tabs for Solutions */}
       <div
         style={{
@@ -160,7 +221,7 @@ export default function Home() {
           width: "100%",
           maxWidth: "800px",
           boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-          borderRadius: "10px",
+          borderRadius: "0px",
         }}
       >
         <div
@@ -174,9 +235,11 @@ export default function Home() {
             color: activeTab === 1 ? "white" : "#333",
             fontWeight: activeTab === 1 ? "bold" : "normal",
             transition: "background-color 0.3s, transform 0.3s",
-            transform: activeTab === 1 ? "scale(1.05)" : "scale(1)",
+            transform: activeTab === 1 ? "scaleY(1)" : "scale(1)",
             borderTopLeftRadius: "10px",
             borderTopRightRadius: "10px",
+            zIndex: activeTab === 1 ? 2 : 1,  // Higher z-index for active tab
+
           }}
         >
           Multiple Property Finder
@@ -192,9 +255,11 @@ export default function Home() {
             color: activeTab === 2 ? "white" : "#333",
             fontWeight: activeTab === 2 ? "bold" : "normal",
             transition: "background-color 0.3s, transform 0.3s",
-            transform: activeTab === 2 ? "scale(1.05)" : "scale(1)",
+            transform: activeTab === 2 ? "scaleY(1)" : "scale(1)",
             borderTopLeftRadius: "10px",
             borderTopRightRadius: "10px",
+            zIndex: activeTab === 2 ? 2 : 1,  // Higher z-index for active tab
+
           }}
         >
           Single Property Finder
@@ -336,9 +401,9 @@ export default function Home() {
           </div>
 
           {/* Error message */}
-          {error && (
+          {errors.multiple && activeTab === 1 &&(
             <p style={{ color: "red", fontSize: "14px", fontWeight: "bold" }}>
-              {error}
+              {errors.multiple}
             </p>
           )}
 
@@ -376,7 +441,7 @@ export default function Home() {
             textAlign: "center",
           }}
         >
-          <section style={{ marginBottom: "50px" }}>
+          <section style={{ marginBottom: "35px" }}>
             <h3 style={{ fontSize: "1.5rem", fontWeight: "600" }}>
               Property Management Company Finder
             </h3>
@@ -396,12 +461,12 @@ export default function Home() {
 
               style={{
                
-                padding: "10px",
+                padding: "5px",
                 marginBottom: "40px",
                 borderRadius: "8px",
                 border: "2px solid #4C51BF",
                 fontSize: "16px",
-                width: "250px",
+                width: "450px",
                 textAlign: "center",
                 transition: "0.3s",
 
@@ -417,9 +482,9 @@ export default function Home() {
 
 
           {/* Error message */}
-          {error && (
+          {errors.single && activeTab===2 && (
             <p style={{ color: "red", fontSize: "14px", fontWeight: "bold" }}>
-              {error}
+              {errors.single}
             </p>
           )}
 
