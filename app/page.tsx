@@ -34,6 +34,9 @@ export default function Home() {
 
 
   const handleTextGenerate = async () => {
+    
+    
+    setLoading(true);
     const input = `{\"address\":\"${textInput}\"}`;
     const response = await fetch("/api/py/your-endpoint", {
       method: "POST",
@@ -44,6 +47,7 @@ export default function Home() {
     });
 
     const blob = await response.blob();
+    setLoading(false)
     const url = window.URL.createObjectURL(blob);
 
     const a = document.createElement("a");
@@ -419,8 +423,9 @@ export default function Home() {
             </p>
           )}
 
-          {/* Generate Button */}
+          {/* Find Button */}
           <button
+            // id = "findBtn"
             onClick={handleTextGenerate}
             disabled={loading}
             style={{
