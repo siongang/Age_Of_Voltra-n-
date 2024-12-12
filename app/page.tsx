@@ -9,7 +9,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<number>(1);
   const [showNote, setShowNote] = useState(false); // State for showing Important Note
-
+  const [textInput, setTextInput] = useState<string>('');
   // Handle file input
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
@@ -31,6 +31,33 @@ export default function Home() {
       setError("Please select a valid JSON file.");
     }
   };
+
+
+  const handleTextGenerate = async () => {
+    const input = `{\"address\":\"${textInput}\"}`;
+    const response = await fetch("/api/py/your-endpoint", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: input,
+    });
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "data.csv";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+  const handleTextInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputText = e.target.value;
+    setTextInput(inputText)
+    
+  }
 
   const handleGenerate = async () => {
     if (!jsonData) {
@@ -73,8 +100,6 @@ export default function Home() {
   };
 
   return (
-
-    
 
     <div
       style={{
@@ -150,7 +175,7 @@ export default function Home() {
             borderTopRightRadius: "10px",
           }}
         >
-          JSON Input
+          Multiple Property Finder
         </div>
         <div
           onClick={() => setActiveTab(2)}
@@ -168,7 +193,7 @@ export default function Home() {
             borderTopRightRadius: "10px",
           }}
         >
-          Solution 2: 
+          Single Property Finder
         </div>
       </div>
 
@@ -187,15 +212,16 @@ export default function Home() {
         >
           <section style={{ marginBottom: "50px" }}>
             <h3 style={{ fontSize: "1.5rem", fontWeight: "600" }}>
-              Property Owner & Company Domain Finder
+              Property Management Company Finder
             </h3>
             <p>
-              Upload a JSON file containing information about a property.
-              We'll help you find the web domains of the companies that own
+              Upload a JSON file containing information about a property<br></br> to find the companies that own
               these properties.
             </p>
           </section>
 
+
+         
           {/* File Input and Important Note Button */}
           <div
             style={{
@@ -207,22 +233,35 @@ export default function Home() {
             }}
           >
             {/* File Input */}
-            <input
-              type="file"
-              accept=".json"
-              onChange={handleFileChange}
+            <div
               style={{
                 padding: "15px",
                 borderRadius: "8px",
                 border: "2px solid #4C51BF",
                 fontSize: "16px",
-                cursor: "pointer",
                 width: "250px",
                 textAlign: "center",
                 transition: "0.3s",
+                
               }}
-            />
+            >
+              {/* <label htmlFor="fileInput">
+                <button type="button">Choose File</button> 
+              </label> */}
+              <input
+                id="fileInput" 
+                type = "file"
+                accept=".json"
+                onChange={handleFileChange}
+                // style={{ }}  
+              >
+              </input>
+          
+              
+            </div>
 
+
+                  
             {/* Important Note Button */}
             <div style={{ position: "relative" }}>
               <button
@@ -322,6 +361,92 @@ export default function Home() {
         </div>
       )}
 
+      {activeTab === 2 && (
+          <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%",
+            maxWidth: "800px",
+            textAlign: "center",
+          }}
+        >
+          <section style={{ marginBottom: "50px" }}>
+            <h3 style={{ fontSize: "1.5rem", fontWeight: "600" }}>
+              Property Management Company Finder
+            </h3>
+            <p>
+              Enter an address of a property to find the owner/management company.
+            </p>
+          </section>
+
+          <div>
+            <input
+              id = "textinput"
+              type = "text"
+              placeholder="Enter Address"
+              value = {textInput}
+              onChange={handleTextInputChange}
+              // onChange={handleTextInput}
+
+              style={{
+               
+                padding: "10px",
+                marginBottom: "40px",
+                borderRadius: "8px",
+                border: "2px solid #4C51BF",
+                fontSize: "16px",
+                width: "250px",
+                textAlign: "center",
+                transition: "0.3s",
+
+              }}
+            >
+
+            </input>
+
+          </div>
+        
+         
+
+
+
+          {/* Error message */}
+          {error && (
+            <p style={{ color: "red", fontSize: "14px", fontWeight: "bold" }}>
+              {error}
+            </p>
+          )}
+
+          {/* Generate Button */}
+          <button
+            onClick={handleTextGenerate}
+            disabled={loading}
+            style={{
+              padding: "15px 40px",
+              backgroundColor: "#4C51BF",
+              color: "white",
+              border: "none",
+              borderRadius: "10px",
+              cursor: "pointer",
+              fontSize: "18px",
+              fontWeight: "600",
+              transition: "background-color 0.3s, transform 0.3s",
+              opacity: loading ? 0.6 : 1,
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            {loading ? "Finding..." : "Find"}
+          </button>
+        </div>
+
+      )}
+
+
+    
+
     </div>
-  );
+      
+);
 }
