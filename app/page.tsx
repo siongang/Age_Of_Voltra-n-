@@ -216,6 +216,7 @@ export default function Home() {
                 borderRadius: "8px",
                 border: "2px solid #4C51BF",
                 fontSize: "16px",
+                cursor: "pointer",
                 width: "250px",
                 textAlign: "center",
                 transition: "0.3s",
